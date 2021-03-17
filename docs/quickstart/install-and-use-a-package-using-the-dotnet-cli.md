@@ -1,8 +1,8 @@
 ---
 title: Install and use a NuGet package using the dotnet CLI
 description: A walkthrough tutorial on the process of installing and using a NuGet package in a .NET Core project.
-author: karann-msft
-ms.author: karann
+author: JonDouglas
+ms.author: jodou
 ms.date: 01/23/2018
 ms.topic: quickstart
 ---
@@ -30,7 +30,7 @@ NuGet packages can be installed into a .NET project of some kind. For this walkt
 
 1. Create the project using the following command:
 
-    ```cli
+    ```dotnetcli
     dotnet new console
     ```
 
@@ -40,16 +40,16 @@ NuGet packages can be installed into a .NET project of some kind. For this walkt
 
 1. Use the following command to install the `Newtonsoft.json` package:
 
-    ```cli
+    ```dotnetcli
     dotnet add package Newtonsoft.Json
     ```
 
 2. After the command completes, open the `.csproj` file to see the added reference:
 
     ```xml
-   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
-   </ItemGroup>
+    <ItemGroup>
+      <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    </ItemGroup>
     ```
 
 ## Use the Newtonsoft.Json API in the app
@@ -97,6 +97,11 @@ NuGet packages can be installed into a .NET project of some kind. For this walkt
       "DOB": "1980-02-20T00:00:00Z"
     }
     ```
+## Related video
+
+> [!Video https://channel9.msdn.com/Series/NuGet-101/Install-and-Use-a-NuGet-Package-with-the-NET-CLI-3-of-5/player]
+
+Find more NuGet videos on [Channel 9](https://channel9.msdn.com/Series/NuGet-101) and [YouTube](https://www.youtube.com/playlist?list=PLdo4fOcmZ0oVLvfkFk8O9h6v2Dcdh2bh_).
 
 ## Next steps
 

@@ -1,8 +1,8 @@
 ---
 title: Manage package trust boundaries
 description: Describes the process of installing signed NuGet packages and configuring package signature trust settings.
-author: karann-msft
-ms.author: karann
+author: JonDouglas
+ms.author: jodou
 ms.date: 11/29/2018
 ms.topic: conceptual
 ---
@@ -90,7 +90,7 @@ In some situations you may want to enable verification using certificates that d
 
 ### Sync repository certificates
 
-Package repositories should announce the certificates they use in their [service index](../api/service-index.md). Eventually the repository will update these certificates, e.g. when the certificate expires. When that happens, clients with specific policies will require an update to the configuration to include the newly added certificate. You can easily upgrade the trusted signers associated to a repository by using the `nuget.exe` [trusted-signers sync command](../reference/cli-reference/cli-ref-trusted-signers.md#nuget-trusted-signers-sync--name-).
+Package repositories should announce the certificates they use in their [service index](../api/service-index.md). Eventually the repository will update these certificates, e.g. when the certificate expires. When that happens, clients with specific policies will require an update to the configuration to include the newly added certificate. You can easily upgrade the trusted signers associated to a repository by using the `nuget.exe` [trusted-signers sync command](../reference/cli-reference/cli-ref-trusted-signers.md#nuget-trusted-signers-sync--name-name).
 
 ### Schema reference
 

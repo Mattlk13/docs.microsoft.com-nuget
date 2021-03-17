@@ -1,15 +1,15 @@
 ---
 title: Create a NuGet package using MSBuild
 description: A detailed guide to the process of designing and creating a NuGet package, including key decision points like files and versioning.
-author: karann-msft
-ms.author: karann
-ms.date: 08/05/2019
+author: JonDouglas
+ms.author: jodou
+ms.date: 02/20/2020
 ms.topic: conceptual
 ---
 
 # Create a NuGet package using MSBuild
 
-When you create a NuGet package from your code, you package that functionality into a component that can be shared with and used by any number of other developers. This article describes how to create a package using MSBuild. MSBuild comes preinstalled with every Visual Studio workload that contains NuGet. Additionally you can also use MSBuild through the dotnet CLI with [dotnet msbuild](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-msbuild)
+When you create a NuGet package from your code, you package that functionality into a component that can be shared with and used by any number of other developers. This article describes how to create a package using MSBuild. MSBuild comes preinstalled with every Visual Studio workload that contains NuGet. Additionally you can also use MSBuild through the dotnet CLI with [dotnet msbuild](/dotnet/core/tools/dotnet-msbuild).
 
 For .NET Core and .NET Standard projects that use the [SDK-style format](../resources/check-project-format.md), and any other SDK-style projects, NuGet uses information in the project file directly to create a package.  For a non-SDK-style project that uses `<PackageReference>`, NuGet also uses the project file to create a package.
 
@@ -29,6 +29,10 @@ The following properties are required to create a package.
 - The package title as it should appear on the host (like nuget.org)
 - `Authors`, author and owner information. If not specified, the default value is `AssemblyName`.
 - `Company`, your company name. If not specified, the default value is `AssemblyName`.
+
+Additionally if you are packing non-SDK-style projects that use PackageReference, the following is required:
+
+- `PackageOutputPath`, the output folder for the package generated when calling pack.
 
 In Visual Studio, you can set these values in the project properties (right-click the project in Solution Explorer, choose **Properties**, and select the **Package** tab). You can also set these properties directly in the project files (*.csproj*).
 
@@ -64,6 +68,10 @@ You can also set the optional properties, such as `Title`, `PackageDescription`,
 > For packages built for public consumption, pay special attention to the **PackageTags** property, as tags help others find your package and understand what it does.
 
 For details on declaring dependencies and specifying version numbers, see [Package references in project files](../consume-packages/package-references-in-project-files.md) and [Package versioning](../concepts/package-versioning.md). It is also possible to surface assets from dependencies directly in the package by using the `<IncludeAssets>` and `<ExcludeAssets>` attributes. For more information, seee [Controlling dependency assets](../consume-packages/package-references-in-project-files.md#controlling-dependency-assets).
+
+## Add an optional description field
+
+[!INCLUDE [add description to package](includes/add-description.md)]
 
 ## Choose a unique package identifier and set the version number
 
@@ -176,4 +184,4 @@ You might also want to extend the capabilities of your package or otherwise supp
 Finally, there are additional package types to be aware of:
 
 - [Native Packages](../guides/native-packages.md)
-- [Symbol Packages](../create-packages/symbol-packages.md)
+- [Symbol Packages](../create-packages/symbol-packages-snupkg.md)

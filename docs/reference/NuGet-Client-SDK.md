@@ -1,24 +1,108 @@
 ---
 title: NuGet Client SDK
 description: The API is evolving and not yet documented, but examples are available on Dave Glick's blog.
-author: karann-msft
-ms.author: karann
+author: JonDouglas
+ms.author: jodou
 ms.date: 01/09/2018
 ms.topic: conceptual
 ---
 
 # NuGet Client SDK
 
-The *NuGet Client SDK* refers to a group of NuGet packages centered around [NuGet.Commands](https://www.nuget.org/packages/NuGet.Commands), [NuGet.Packaging](https://www.nuget.org/packages/NuGet.Packaging), and [NuGet.Protocol](https://www.nuget.org/packages/NuGet.Protocol). These packages replace the earlier [NuGet.Core](https://www.nuget.org/packages/NuGet.Core/) library.
+The *NuGet Client SDK* refers to a group of NuGet packages:
 
-We are working on having a stable surface area that we can document soon.
+* [`NuGet.Protocol`](https://www.nuget.org/packages/NuGet.Protocol) - Used to interact with HTTP and file-based NuGet feeds
+* [`NuGet.Packaging`](https://www.nuget.org/packages/NuGet.Packaging) - Used to interact with NuGet packages. `NuGet.Protocol` depends on this package
+
+You can find the source code for these packages in the [NuGet/NuGet.Client](https://github.com/NuGet/NuGet.Client) GitHub repository.
+You can find the source code for these examples on the [NuGet.Protocol.Samples](https://github.com/NuGet/Samples/tree/master/NuGetProtocolSamples) project on GitHub.
 
 > [!Note]
->  For documentation on the NuGet server protocol, please refer to the [NuGet Server API](~/api/overview.md).
+> For documentation on the NuGet server protocol, please refer to the [NuGet Server API](~/api/overview.md).
 
-## Source code
+## NuGet.Protocol
 
-The source code is published on GitHub in the project [NuGet/NuGet.Client](https://github.com/NuGet/NuGet.Client).
+Install the `NuGet.Protocol` package to interact with HTTP and folder-based NuGet package feeds:
+
+```ps1
+dotnet add package NuGet.Protocol
+```
+
+### List package versions
+
+Find all versions of Newtonsoft.Json using the [NuGet V3 Package Content API](../api/package-base-address-resource.md#enumerate-package-versions):
+
+[!code-csharp[ListPackageVersions](~/../nuget-samples/NuGetProtocolSamples/Program.cs?name=ListPackageVersions)]
+
+### Download a package
+
+Download Newtonsoft.Json v12.0.1 using the [NuGet V3 Package Content API](../api/package-base-address-resource.md):
+
+[!code-csharp[DownloadPackage](~/../nuget-samples/NuGetProtocolSamples/Program.cs?name=DownloadPackage)]
+
+### Get package metadata
+
+Get the metadata for the "Newtonsoft.Json" package using the [NuGet V3 Package Metadata API](../api/registration-base-url-resource.md):
+
+[!code-csharp[GetPackageMetadata](~/../nuget-samples/NuGetProtocolSamples/Program.cs?name=GetPackageMetadata)]
+
+### Search packages
+
+Search for "json" packages using the [NuGet V3 Search API](../api/search-query-service-resource.md):
+
+[!code-csharp[SearchPackages](~/../nuget-samples/NuGetProtocolSamples/Program.cs?name=SearchPackages)]
+
+### Push a package
+
+Push a package using the [NuGet V3 Push and Delete API](../api/package-publish-resource.md):
+
+[!code-csharp[PushPackage](~/../nuget-samples/NuGetProtocolSamples/Program.cs?name=PushPackage)]
+
+### Delete a package
+
+Delete a package using the [NuGet V3 Push and Delete API](../api/package-publish-resource.md):
+
+> [!Note]
+> NuGet servers are free to interpret a package delete request as a "hard delete", "soft delete", or "unlist".
+> For example, nuget.org interprets the package delete request as an "unlist". For more information about this
+> practice, see the [Deleting Packages](../nuget-org/policies/deleting-packages.md) policy.
+
+[!code-csharp[DeletePackage](~/../nuget-samples/NuGetProtocolSamples/Program.cs?name=DeletePackage)]
+
+### Work with authenticated feeds
+
+Use [`NuGet.Protocol`](https://www.nuget.org/packages/NuGet.Protocol) to work with authenticated feeds.
+
+[!code-csharp[AuthenticatedFeed](~/../nuget-samples/NuGetProtocolSamples/Program.cs?name=AuthenticatedFeed)]
+
+## NuGet.Packaging
+
+Install the `NuGet.Packaging` package to interact with `.nupkg` and `.nuspec` files from a stream:
+
+```ps1
+dotnet add package NuGet.Packaging
+```
+
+### Create a package
+
+Create a package, set metadata, and add dependencies using [`NuGet.Packaging`](https://www.nuget.org/packages/NuGet.Packaging).
+
+> [!IMPORTANT]
+> It is strongly recommended that NuGet packages are created using the official NuGet tooling and **not** using this
+> low-level API. There are a variety of characteristics important for a well-formed package and the latest version of
+> tooling helps incorporate these best practices.
+> 
+> For more information about creating NuGet packages, see the overview of the
+> [package creation workflow](../create-packages/overview-and-workflow.md) and the documentation for official pack
+> tooling (for example, [using the dotnet CLI](../create-packages/creating-a-package-dotnet-cli.md)).
+
+[!code-csharp[CreatePackage](~/../nuget-samples/NuGetProtocolSamples/Program.cs?name=CreatePackage)]
+
+### Read a package
+
+Read a package from a file stream using [`NuGet.Packaging`](https://www.nuget.org/packages/NuGet.Packaging).
+
+[!code-csharp[ReadPackage](~/../nuget-samples/NuGetProtocolSamples/Program.cs?name=ReadPackage)]
 
 ## Third-party documentation
 
@@ -32,6 +116,6 @@ You can find examples and documentation for some of the API in the following blo
 > These blog posts were written shortly after the **3.4.3** version of the NuGet client SDK packages were released.
 > Newer versions of the packages may be incompatible with the information in the blog posts.
 
-Martin Björkström did a follow-up blog post to Dave Glick's blog series where he introduces a different approach on using the NuGet Client SDK for installing NuGet packages:
+Martin Björkström did a follow-up blog post to Dave Glick's blog series where he introduces a different approach on using the NuGet Client SDK to install NuGet packages:
 
 - [Revisiting the NuGet v3 Libraries](https://martinbjorkstrom.com/posts/2018-09-19-revisiting-nuget-client-libraries)

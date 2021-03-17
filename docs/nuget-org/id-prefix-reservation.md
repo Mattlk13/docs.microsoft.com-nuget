@@ -1,16 +1,16 @@
 ---
 title: ID Prefix Reservation
 description: Package ID Prefix Reservation feature description and author guide.
-author: diverdan92
-ms.author: diverdan92
-ms.date: 10/09/2017
+author: JonDouglas
+ms.author: jodou
+ms.date: 09/07/2019
 ms.topic: reference
-ms.reviewer: ananguar
+ms.reviewer: karann
 ---
 
 # Package ID prefix reservation
 
-Package owners can reserve and protect their identity by reserving ID prefixes. Package consumers are provided with additional information when consuming packages that the package they are consuming are not deceptive in their identifying properties. 
+Package owners can reserve and protect their identity by reserving ID prefixes. Package consumers are provided with additional information when the packages that they are consuming are not deceptive in their identifying properties. 
 
 [nuget.org](https://www.nuget.org/) and Visual Studio 2017 version 15.4 or later show a visual indicator for packages that are submitted by owners with a reserved package ID prefix, as long as the package matches the reserved ID prefix naming pattern. The below reference explains what the ID prefix reservation entails, and how an owner can apply for an ID prefix.
 
@@ -68,25 +68,29 @@ After the application is submitted, you are notified of acceptance or rejection 
 
 ### ID prefix reservation criteria
 
-When reviewing any application for ID prefix reservation, the [nuget.org](https://www.nuget.org/) team will evaluate the application against the below criteria. Not all criteria needs to be met for a prefix to be reserved, but the application may be denied if there is not substantial evidence of the criteria being met (with an explanation given):
+When reviewing any application for ID prefix reservation, the [NuGet.org](https://www.nuget.org) team will evaluate the application against the below criteria. Please note that not all criteria need to be met for a prefix to be reserved, but the application may be denied if there is not substantial evidence of the criteria being met (with an explanation given):
 
-1. Does the package ID prefix properly and clearly identify the package owner?
+1. Does the package ID prefix properly and clearly identify the reservation owner?
 
-1. Has the package owner [enabled 2FA for their NuGet.org account](individual-accounts.md#enable-two-factor-authentication-2fa)?
-
-1. Are a significant number of the packages that have already been submitted by the owner under the package ID prefix?
+1. Has the owner [enabled 2FA for their NuGet.org account](individual-accounts.md#enable-two-factor-authentication-2fa)?
 
 1. Is the package ID prefix something common that should not belong to any individual owner or organization?
 
-1. Would *not* reserving the package ID prefix cause ambiguity and confusion for the community?
+1. Would *not* reserving the package ID prefix cause ambiguity, confusion, or other harm to the community?
+
+When publishing packages to NuGet.org within your ID prefix reservation, the following best practices must be considered:
 
 1. Are the identifying properties of the packages that match the package ID prefix clear and consistent (especially the package author)?
 
 1. Do the packages have a license (using the [license](../reference/nuspec.md#license) metadata element and NOT licenseUrl which is being deprecated)?
 
+1. If the packages have an icon (using the iconUrl metadata element), are they also using the [icon](../reference/nuspec.md#icon) metadata element? It is not a requirement to remove the iconUrl but embedded icons must be used.
+ 
+Consider reviewing the full [package authoring best practices guide](../create-packages/package-authoring-best-practices.md) in addition to the points above.
+
 ## Third party feed provider scenarios
 
-If a third party feed provider is interested in implementing their own service to provide prefix reservations, you can do so by modifying the search service in the NuGet V3 feed providers. The addition in the feed search service is to add the *verified* property, with examples for the V3 feeds below. The NuGet client will not support the added property in the V2 feed.
+If a third party feed provider is interested in implementing their own service to provide prefix reservations, they can do so by modifying the search service in the NuGet V3 feed providers. The change in the feed search service is to add the `verified` property. The NuGet client will not support the added property in the V2 feed.
 
 For more information, see the [documentation about the API's search service](../api/search-query-service-resource.md).
 

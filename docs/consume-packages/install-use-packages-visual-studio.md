@@ -1,8 +1,8 @@
 ---
 title: Install and manage NuGet packages in Visual Studio
 description: Instructions for using the NuGet Package Manager UI in Visual Studio for working with NuGet packages.
-author: karann-msft
-ms.author: karann
+author: JonDouglas
+ms.author: jodou
 ms.date: 07/08/2019
 ms.topic: conceptual
 f1_keywords: 
@@ -37,6 +37,9 @@ The NuGet Package Manager UI in Visual Studio on Windows allows you to easily in
 
 > [!Tip]
 > To include prerelease versions in the search, and to make prerelease versions available in the version drop-down, select the **Include prerelease** option.
+
+> [!Note]
+> NuGet has two formats in which a project may use packages: [`PackageReference`](package-references-in-project-files.md) and [`packages.config`](../reference/packages-config.md). [The default can be set in Visual Studio's options window](Package-Restore.md#choose-default-package-management-format).
 
 ## Uninstall a package
 

@@ -1,8 +1,8 @@
 ---
 title: How to manage the global packages, cache, temp folders in NuGet
 description: How to manage the global package installation folder, the package cache, and the temp folders that exist on a computer, which are used when installing, restoring, and updating packages.
-author: karann-msft
-ms.author: karann
+author: JonDouglas
+ms.author: jodou
 ms.date: 03/19/2018
 ms.topic: conceptual
 ---
@@ -49,7 +49,7 @@ plugins-cache: C:\Users\user1\AppData\Local\NuGet\plugins-cache
 
 You can also view folder locations using the [dotnet nuget locals command](/dotnet/core/tools/dotnet-nuget-locals):
 
-```cli
+```dotnetcli
 dotnet nuget locals all --list
 ```
 

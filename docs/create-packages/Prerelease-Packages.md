@@ -1,8 +1,8 @@
 ---
 title: Pre-release versions in NuGet packages
 description: Guidance for building pre-release packages
-author: karann-msft
-ms.author: karann
+author: JonDouglas
+ms.author: jodou
 ms.date: 08/14/2017
 ms.topic: conceptual
 ---
@@ -19,7 +19,7 @@ To support the software release lifecycle, NuGet 1.6 and later allows for the di
 
 You can specify such versions using one of the following ways:
 
-- **If your project uses [`PackageReference`](../consume-packages/package-references-in-project-files.md)**: include the semantic version suffix in the `.csproj` file's [`PackageVersion`](/dotnet/core/tools/csproj.md#packageversion) element:
+- **If your project uses [`PackageReference`](../consume-packages/package-references-in-project-files.md)**: include the semantic version suffix in the `.csproj` file's [`PackageVersion`](/dotnet/core/tools/csproj#packageversion) element:
 
     ```xml
     <PropertyGroup>
@@ -51,7 +51,7 @@ By default, NuGet does not include pre-release versions when working with packag
 
 ## Semantic versioning
 
-The [Semantic Versioning or SemVer convention](http://semver.org/spec/v1.0.0.html) describes how to utilize strings in version numbers to convey the meaning of the underlying code.
+The [Semantic Versioning or SemVer convention](https://semver.org/spec/v1.0.0.html) describes how to utilize strings in version numbers to convey the meaning of the underlying code.
 
 In this convention, each version has three parts, `Major.Minor.Patch`, with the following meaning:
 
@@ -68,19 +68,21 @@ With this in mind, it's generally good to follow recognized naming conventions s
 - `-rc`: Release candidate, typically a release that's potentially final (stable) unless significant bugs emerge.
 
 > [!Note]
-> NuGet 4.3.0+ supports [Semantic Versioning v2.0.0](http://semver.org/spec/v2.0.0.html), which supports pre-release numbers with dot notation, as in `1.0.1-build.23`. Dot notation is not supported with NuGet versions before 4.3.0. In earlier versions of NuGet, you could use a form like `1.0.1-build23` but this was always considered a pre-release version.
+> NuGet 4.3.0+ supports [Semantic Versioning v2.0.0](https://semver.org/spec/v2.0.0.html), which supports pre-release numbers with dot notation, as in `1.0.1-build.23`. Dot notation is not supported with NuGet versions before 4.3.0. In earlier versions of NuGet, you could use a form like `1.0.1-build23` but this was always considered a pre-release version.
 
 Whatever suffixes you use, however, NuGet will give them precedence in reverse alphabetical order:
 
-    1.0.1
-    1.0.1-zzz
-    1.0.1-rc
-    1.0.1-open
-    1.0.1-beta.12
-    1.0.1-beta.5
-    1.0.1-beta
-    1.0.1-alpha.2
-    1.0.1-alpha
+```
+1.0.1
+1.0.1-zzz
+1.0.1-rc
+1.0.1-open
+1.0.1-beta.12
+1.0.1-beta.5
+1.0.1-beta
+1.0.1-alpha.2
+1.0.1-alpha
+```
 
 As shown, the version without any suffix will always take precedence over pre-release versions.
 

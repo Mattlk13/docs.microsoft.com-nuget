@@ -1,9 +1,9 @@
 ---
 title: Create a NuGet package using the dotnet CLI
 description: A detailed guide to the process of designing and creating a NuGet package, including key decision points like files and versioning.
-author: karann-msft
-ms.author: karann
-ms.date: 07/09/2019
+author: JonDouglas
+ms.author: jodou
+ms.date: 02/20/2020
 ms.topic: conceptual
 ---
 
@@ -61,7 +61,11 @@ You can also set the optional properties, such as `Title`, `PackageDescription`,
 > [!NOTE]
 > For packages built for public consumption, pay special attention to the **PackageTags** property, as tags help others find your package and understand what it does.
 
-For details on declaring dependencies and specifying version numbers, see [Package references in project files](../consume-packages/package-references-in-project-files.md) and [Package versioning](../concepts/package-versioning.md). It is also possible to surface assets from dependencies directly in the package by using the `<IncludeAssets>` and `<ExcludeAssets>` attributes. For more information, seee [Controlling dependency assets](../consume-packages/package-references-in-project-files.md#controlling-dependency-assets).
+For details on declaring dependencies and specifying version numbers, see [Package references in project files](../consume-packages/package-references-in-project-files.md) and [Package versioning](../concepts/package-versioning.md). It is also possible to surface assets from dependencies directly in the package by using the `<IncludeAssets>` and `<ExcludeAssets>` attributes. For more information, see [Controlling dependency assets](../consume-packages/package-references-in-project-files.md#controlling-dependency-assets).
+
+## Add an optional description field
+
+[!INCLUDE [add description to package](includes/add-description.md)]
 
 ## Choose a unique package identifier and set the version number
 
@@ -71,7 +75,7 @@ For details on declaring dependencies and specifying version numbers, see [Packa
 
 To build a NuGet package (a `.nupkg` file) from the project, run the `dotnet pack` command, which also builds the project automatically:
 
-```cli
+```dotnetcli
 # Uses the project file in the current folder by default
 dotnet pack
 ```
@@ -102,7 +106,7 @@ When you run `dotnet pack` on a solution, this packs all the projects in the sol
 
 ### Test package installation
 
-Before publishing a package, you typically want to test the process of installing a package into a project. The tests make sure that the necessarily files all end up in their correct places in the project.
+Before publishing a package, you typically want to test the process of installing a package into a project. The tests make sure that the necessary files all end up in their correct places in the project.
 
 You can test installations manually in Visual Studio or on the command line using the normal [package installation steps](../consume-packages/overview-and-workflow.md#ways-to-install-a-nuget-package).
 
@@ -117,6 +121,7 @@ You might also want to extend the capabilities of your package or otherwise supp
 
 - [Package versioning](../concepts/package-versioning.md)
 - [Support multiple target frameworks](../create-packages/multiple-target-frameworks-project-file.md)
+- [Add a package icon](../reference/nuspec.md#icon)
 - [Transformations of source and configuration files](../create-packages/source-and-config-file-transformations.md)
 - [Localization](../create-packages/creating-localized-packages.md)
 - [Pre-release versions](../create-packages/prerelease-packages.md)
@@ -126,4 +131,4 @@ You might also want to extend the capabilities of your package or otherwise supp
 Finally, there are additional package types to be aware of:
 
 - [Native Packages](../guides/native-packages.md)
-- [Symbol Packages](../create-packages/symbol-packages.md)
+- [Symbol Packages](../create-packages/symbol-packages-snupkg.md)

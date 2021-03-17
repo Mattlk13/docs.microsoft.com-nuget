@@ -1,15 +1,15 @@
 ---
 title: nuget.config File Reference
 description: NuGet.Config file reference including the config, bindingRedirects, packageRestore, solution, and packageSource sections.
-author: karann-msft
-ms.author: karann
+author: JonDouglas
+ms.author: jodou
 ms.date: 08/13/2019
 ms.topic: reference
 ---
 
 # nuget.config reference
 
-NuGet behavior is controlled by settings in different `NuGet.Config` files as described in [Common NuGet configurations](../consume-packages/configuring-nuget-behavior.md).
+NuGet behavior is controlled by settings in different `NuGet.Config` or `nuget.config` files as described in [Common NuGet configurations](../consume-packages/configuring-nuget-behavior.md).
 
 `nuget.config` is an XML file containing a top-level `<configuration>` node, which then contains the section elements described in this topic. Each section contains zero or more items. See the [examples config file](#example-config-file). Setting names are case-insensitive, and values can use [environment variables](#using-environment-variables).
 
@@ -27,8 +27,8 @@ Contains miscellaneous configuration settings, which can be set using the [`nuge
 | Key | Value |
 | --- | --- |
 | dependencyVersion (`packages.config` only) | The default `DependencyVersion` value for package install, restore, and update, when the `-DependencyVersion` switch is not specified directly. This value is also used by the NuGet Package Manager UI. Values are `Lowest`, `HighestPatch`, `HighestMinor`, `Highest`. |
-| globalPackagesFolder (projects using PackageReference only) | The location of the default global packages folder. The default is `%userprofile%\.nuget\packages` (Windows) or `~/.nuget/packages` (Mac/Linux). A relative path can be used in project-specific `nuget.config` files. This setting is overridden by the NUGET_PACKAGES environment variable, which takes precedence. |
-| repositoryPath (`packages.config` only) | The location in which to install NuGet packages instead of the default `$(Solutiondir)/packages` folder. A relative path can be used in project-specific `nuget.config` files. This setting is overridden by the NUGET_PACKAGES environment variable, which takes precedence. |
+| globalPackagesFolder (projects using PackageReference only) | The location of the default global packages folder. The default is `%userprofile%\.nuget\packages` (Windows) or `~/.nuget/packages` (Mac/Linux). A relative path can be used in project-specific `nuget.config` files. This setting is overridden by the `NUGET_PACKAGES` environment variable, which takes precedence. |
+| repositoryPath (`packages.config` only) | The location in which to install NuGet packages instead of the default `$(Solutiondir)/packages` folder. A relative path can be used in project-specific `nuget.config` files. This setting is overridden by the `NUGET_PACKAGES` environment variable, which takes precedence. |
 | defaultPushSource | Identifies the URL or path of the package source that should be used as the default if no other package sources are found for an operation. |
 | http_proxy http_proxy.user http_proxy.password no_proxy | Proxy settings to use when connecting to package sources; `http_proxy` should be in the format `http://<username>:<password>@<domain>`. Passwords are encrypted and cannot be added manually. For `no_proxy`, the value is a comma-separated list of domains the bypass the proxy server. You can alternately use the http_proxy and no_proxy environment variables for those values. For additional details, see [NuGet proxy settings](http://skolima.blogspot.com/2012/07/nuget-proxy-settings.html) (skolima.blogspot.com). |
 | signatureValidationMode | Specifies the validation mode used to verify package signatures for package install, and restore. Values are `accept`, `require`. Defaults to `accept`.
@@ -121,15 +121,20 @@ Lists all known package sources. The order is ignored during restore operations 
 </packageSources>
 ```
 
+> [!Tip]
+> When `<clear />` is present for a given node, NuGet ignores previously defined configuration values for that node. [Read more about how settings are applied](../consume-packages/configuring-nuget-behavior.md#how-settings-are-applied).
+
 ### packageSourceCredentials
 
 Stores usernames and passwords for sources, typically specified with the `-username` and `-password` switches with `nuget sources`. Passwords are encrypted by default unless the `-storepasswordincleartext` option is also used.
+Optionally, valid authentication types can be specified with the `-validauthenticationtypes` switch.
 
 | Key | Value |
 | --- | --- |
 | username | The user name for the source in plain text. |
-| password | The encrypted password for the source. |
-| cleartextpassword | The unencrypted password for the source. |
+| password | The encrypted password for the source. Encrypted passwords are only supported on Windows, and only can be decrypted when used on the same machine and via the same user as the original encryption. |
+| cleartextpassword | The unencrypted password for the source. Note: environment variables can be used for improved security. |
+| validauthenticationtypes | Comma-separated list of valid authentication types for this source. Set this to `basic` if the server advertises NTLM or Negotiate and your credentials must be sent using the Basic mechanism, for instance when using a PAT with on-premises Azure DevOps Server. Other valid values include `negotiate`, `kerberos`, `ntlm`, and `digest`, but these values are unlikely to be useful. |
 
 **Example:**
 
@@ -148,6 +153,21 @@ In the config file, the `<packageSourceCredentials>` element contains child node
 </packageSourceCredentials>
 ```
 
+When using unencrypted passwords stored in an environment variable:
+
+```xml
+<packageSourceCredentials>
+    <Contoso>
+        <add key="Username" value="user@contoso.com" />
+        <add key="ClearTextPassword" value="%ContosoPassword%" />
+    </Contoso>
+    <Test_x0020_Source>
+        <add key="Username" value="user" />
+        <add key="ClearTextPassword" value="%TestSourcePassword%" />
+    </Test_x0020_Source>
+</packageSourceCredentials>
+```
+
 When using unencrypted passwords:
 
 ```xml
@@ -159,6 +179,23 @@ When using unencrypted passwords:
     <Test_x0020_Source>
         <add key="Username" value="user" />
         <add key="ClearTextPassword" value="hal+9ooo_da!sY" />
+    </Test_x0020_Source>
+</packageSourceCredentials>
+```
+
+Additionally, valid authentication methods can be supplied:
+
+```xml
+<packageSourceCredentials>
+    <Contoso>
+        <add key="Username" value="user@contoso.com" />
+        <add key="Password" value="..." />
+        <add key="ValidAuthenticationTypes" value="basic" />
+    </Contoso>
+    <Test_x0020_Source>
+        <add key="Username" value="user" />
+        <add key="ClearTextPassword" value="hal+9ooo_da!sY" />
+        <add key="ValidAuthenticationTypes" value="basic, negotiate" />
     </Test_x0020_Source>
 </packageSourceCredentials>
 ```
@@ -240,13 +277,14 @@ If a `certificate` specifies `allowUntrustedRoot` as `true` the given certificat
 
 ```xml
 <trustedSigners>
-	<author name="microsoft">
-		<certificate fingerprint="3F9001EA83C560D712C24CF213C3D312CB3BFF51EE89435D3430BD06B5D0EECE" hashAlgorithm="SHA256" allowUntrustedRoot="false" />
-	</author>
-	<repository name="nuget.org" serviceIndex="https://api.nuget.org/v3/index.json">
-		<certificate fingerprint="0E5F38F57DC1BCC806D8494F4F90FBCEDD988B46760709CBEEC6F4219AA6157D" hashAlgorithm="SHA256" allowUntrustedRoot="false" />
-		<owners>microsoft;aspnet;nuget</owners>
-	</repository>
+    <author name="microsoft">
+        <certificate fingerprint="3F9001EA83C560D712C24CF213C3D312CB3BFF51EE89435D3430BD06B5D0EECE" hashAlgorithm="SHA256" allowUntrustedRoot="false" />
+        <certificate fingerprint="AA12DA22A49BCE7D5C1AE64CC1F3D892F150DA76140F210ABD2CBFFCA2C18A27" hashAlgorithm="SHA256" allowUntrustedRoot="false" />
+    </author>
+    <repository name="nuget.org" serviceIndex="https://api.nuget.org/v3/index.json">
+        <certificate fingerprint="0E5F38F57DC1BCC806D8494F4F90FBCEDD988B46760709CBEEC6F4219AA6157D" hashAlgorithm="SHA256" allowUntrustedRoot="false" />
+        <owners>microsoft;aspnet;nuget</owners>
+    </repository>
 </trustedSigners>
 ```
 
@@ -300,13 +338,25 @@ You can use environment variables in `nuget.config` values (NuGet 3.4+) to apply
 
 For example, if the `HOME` environment variable on Windows is set to `c:\users\username`, then the value of `%HOME%\NuGetRepository` in the configuration file resolves to `c:\users\username\NuGetRepository`.
 
-Similarly, if `HOME` on Mac/Linux is set to `/home/myStuff`, then `%HOME%/NuGetRepository` in the configuration file resolves to `/home/myStuff/NuGetRepository`.
+Note that you have to use Windows-style environment variables (starts and ends with %) even on Mac/Linux. Having `$HOME/NuGetRepository` in a configuration file will not resolve. On Mac/Linux the value of `%HOME%/NuGetRepository` will resolve to `/home/myStuff/NuGetRepository`.
 
-If an environment variable is not found, NuGet uses the literal value from the configuration file.
+If an environment variable is not found, NuGet uses the literal value from the configuration file. For example `%MY_UNDEFINED_VAR%/NuGetRepository` will be resolved as `path/to/current_working_dir/$MY_UNDEFINED_VAR/NuGetRepository`
+
+The table below show environnment variable syntax and path separator support for NuGet.Config files.
+
+### NuGet.Config environment variable support
+
+| Syntax | Dir separator | Windows nuget.exe | Windows dotnet.exe | Mac nuget.exe (in Mono) | Mac dotnet.exe |
+|---|---|---|---|---|---|
+| `%MY_VAR%` | `/`  | Yes | Yes | Yes | Yes |
+| `%MY_VAR%` | `\`  | Yes | Yes | No | No |
+| `$MY_VAR` | `/`  | No | No | No | No |
+| `$MY_VAR` | `\`  | No | No | No | No |
+
 
 ## Example config file
 
-Below is an example `nuget.config` file that illustrates a number of settings:
+Below is an example `nuget.config` file that illustrates a number of settings including optional ones:
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -317,10 +367,10 @@ Below is an example `nuget.config` file that illustrates a number of settings:
             See: nuget.exe help install
             See: nuget.exe help update
 
-            In this example, %PACKAGEHOME% is an environment variable. On Mac/Linux,
-            use $PACKAGE_HOME/External as the value.
+            In this example, %PACKAGEHOME% is an environment variable.
+            This syntax works on Windows/Mac/Linux
         -->
-        <add key="repositoryPath" value="%PACKAGEHOME%\External" />
+        <add key="repositoryPath" value="%PACKAGEHOME%/External" />
 
         <!--
             Used to specify default source for the push command.
@@ -377,6 +427,7 @@ Below is an example `nuget.config` file that illustrates a number of settings:
     <trustedSigners>
         <author name="microsoft">
             <certificate fingerprint="3F9001EA83C560D712C24CF213C3D312CB3BFF51EE89435D3430BD06B5D0EECE" hashAlgorithm="SHA256" allowUntrustedRoot="false" />
+            <certificate fingerprint="AA12DA22A49BCE7D5C1AE64CC1F3D892F150DA76140F210ABD2CBFFCA2C18A27" hashAlgorithm="SHA256" allowUntrustedRoot="false" />
         </author>
         <repository name="nuget.org" serviceIndex="https://api.nuget.org/v3/index.json">
             <certificate fingerprint="0E5F38F57DC1BCC806D8494F4F90FBCEDD988B46760709CBEEC6F4219AA6157D" hashAlgorithm="SHA256" allowUntrustedRoot="false" />

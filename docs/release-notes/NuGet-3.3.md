@@ -1,8 +1,8 @@
 ---
 title: NuGet 3.3 Release Notes
 description: Release notes for NuGet 3.3 including known issues, bug fixes, added features, and DCRs.
-author: karann-msft
-ms.author: karann
+author: JonDouglas
+ms.author: jodou
 ms.date: 11/11/2016
 ms.topic: conceptual
 ---
@@ -15,7 +15,7 @@ NuGet 3.3 was released November 30, 2015 with a significant number of user inter
 
 ## New Features
 
-* Credential Providers have been introduced that allow NuGet command-line clients to be able to work seamlessly with an authenticated feed. [Instructions on how to install the Visual Studio Team Services credential provider ](../api/nuget-exe-credential-providers.md) and configure the NuGet clients to use it are available on NuGet Docs.
+* Credential Providers have been introduced that allow NuGet command-line clients to be able to work seamlessly with an authenticated feed. [Instructions on how to install the Visual Studio Team Services credential provider ](../reference/extensibility/nuget-exe-credential-providers.md) and configure the NuGet clients to use it are available on NuGet Docs.
 
 ## New User Interface Features
 

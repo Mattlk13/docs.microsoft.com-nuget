@@ -1,8 +1,8 @@
 ---
 title: NuGet Package Dependency Resolution
 description: Details on the process through which a NuGet package's dependencies are resolved and installed in both NuGet 2.x and NuGet 3.x+.
-author: karann-msft
-ms.author: karann
+author: JonDouglas
+ms.author: jodou
 ms.date: 08/14/2017
 ms.topic: conceptual
 ---
@@ -17,9 +17,9 @@ When multiple packages have the same dependency, then the same package ID can ap
 
 ## Dependency resolution with PackageReference
 
-When installing packages into projects using the PackageReference format, NuGet adds references to a flat package graph in the appropriate file and resolves conflicts ahead of time. This process is referred to as *transitive restore*. Reinstalling or restoring packages is then a process of downloading the packages listed in the graph, resulting in faster and more predictable builds. You can also take advantage of wildcard (floating) versions, such as 2.8.\*, avoiding expensive and error prone calls to `nuget update` on the client machines and build servers.
+When installing packages into projects using the PackageReference format, NuGet adds references to a flat package graph in the appropriate file and resolves conflicts ahead of time. This process is referred to as *transitive restore*. Reinstalling or restoring packages is then a process of downloading the packages listed in the graph, resulting in faster and more predictable builds. You can also take advantage of floating versions, such as 2.8.\*,  to avoid modifying the project to use the latest version of a package.
 
-When the NuGet restore process runs prior to a build, it resolves dependencies first in memory, then writes the resulting graph to a file called `project.assets.json`. It also writes the resolved dependencies to a lock file named `packages.lock.json`, if the [lock file functionality is enabled](https://docs.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files#locking-dependencies).
+When the NuGet restore process runs prior to a build, it resolves dependencies first in memory, then writes the resulting graph to a file called `project.assets.json`. It also writes the resolved dependencies to a lock file named `packages.lock.json`, if the [lock file functionality is enabled](../consume-packages/package-references-in-project-files.md#locking-dependencies).
 The assets file is located at `MSBuildProjectExtensionsPath`, which defaults to the project's 'obj' folder. 
 MSBuild then reads this file and translates it into a set of folders where potential references can be found, and then adds them to the project tree in memory.
 
@@ -49,16 +49,16 @@ When an application specifies an exact version number, such as 1.2, that is not 
 
 <a name="floating-versions"></a>
 
-#### Floating (wildcard) versions
+#### Floating versions
 
-A floating or wildcard dependency version is specified with the \* wildcard, as with 6.0.\*. This version specification says "use the latest 6.0.x version"; 4.\* means "use the latest 4.x version." Using a wildcard allows a dependency package to continue evolving without requiring a change to the consuming application (or package).
+A floating dependency version is specified with the \* character. For example, `6.0.*`. This version specification says "use the latest 6.0.x version"; `4.*` means "use the latest 4.x version." Using a floating version reduces changes to the project file, while keeping up to date with the latest version of a dependency.
 
-When using a wildcard, NuGet resolves the highest version of a package that matches the version pattern, for example 6.0.\* gets the highest version of a package that starts with 6.0:
+When using a floating version, NuGet resolves the highest version of a package that matches the version pattern, for example `6.0.*` gets the highest version of a package that starts with 6.0:
 
 ![Choosing version 6.0.1 when a floating version 6.0.* is requested](media/projectJson-dependency-4.png)
 
 > [!Note]
-> For information on the behavior of wildcards and pre-release versions, see [Package versioning](package-versioning.md#version-ranges-and-wildcards).
+> For information on the behavior of floating versions and pre-release versions, see [Package versioning](package-versioning.md#version-ranges).
 
 
 <a name="nearest-wins"></a>
@@ -152,4 +152,3 @@ To resolve incompatibilities, do one of the following:
 
 - Retarget your project to a framework that is supported by the packages you want to use.
 - Contact the author of the packages and work with them to add support for your chosen framework. Each package listing page on [nuget.org](https://www.nuget.org/) has a **Contact Owners** link for this purpose.
-

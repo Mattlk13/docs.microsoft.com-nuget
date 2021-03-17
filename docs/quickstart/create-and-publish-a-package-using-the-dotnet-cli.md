@@ -1,8 +1,8 @@
 ---
 title: Create and publish a NuGet package using the dotnet CLI
 description: A walkthrough tutorial on creating and publishing a NuGet package using the .NET Core CLI, dotnet.
-author: karann-msft
-ms.author: karann
+author: JonDouglas
+ms.author: jodou
 ms.date: 05/24/2019
 ms.topic: quickstart
 ---
@@ -29,8 +29,6 @@ You can use an existing .NET Class Library project for the code you want to pack
 
    This creates the new project.
 
-1. Use `dotnet run` to test that the app has been created properly.
-
 ## Add package metadata to the project file
 
 Every NuGet package needs a manifest that describes the package's contents and dependencies. In a final package, the manifest is a `.nuspec` file that is generated from the NuGet metadata properties that you include in the project file.
@@ -56,7 +54,7 @@ Every NuGet package needs a manifest that describes the package's contents and d
 
 To build a NuGet package (a `.nupkg` file) from the project, run the `dotnet pack` command, which also builds the project automatically:
 
-```cli
+```dotnetcli
 # Uses the project file in the current folder by default
 dotnet pack
 ```
@@ -102,6 +100,12 @@ Once you have a `.nupkg` file, you publish it to nuget.org using the `dotnet nug
 
 [!INCLUDE [publish-manage](includes/publish-manage.md)]
 
+## Related video
+
+> [!Video https://channel9.msdn.com/Series/NuGet-101/Create-and-Publish-a-NuGet-Package-with-the-NET-CLI-5-of-5/player]
+
+Find more NuGet videos on [Channel 9](https://channel9.msdn.com/Series/NuGet-101) and [YouTube](https://www.youtube.com/playlist?list=PLdo4fOcmZ0oVLvfkFk8O9h6v2Dcdh2bh_).
+
 ## Next steps
 
 Congratulations on creating your first NuGet package!
@@ -115,6 +119,7 @@ To explore more that NuGet has to offer, select the links below.
 - [Pre-release Packages](../create-packages/Prerelease-Packages.md)
 - [Support multiple target frameworks](../create-packages/multiple-target-frameworks-project-file.md)
 - [Package versioning](../concepts/package-versioning.md)
+- [Adding a license expression or file](../reference/msbuild-targets.md#packing-a-license-expression-or-a-license-file)
 - [Creating localized packages](../create-packages/creating-localized-packages.md)
 - [Creating symbol packages](../create-packages/symbol-packages-snupkg.md)
 - [Signing packages](../create-packages/Sign-a-package.md)

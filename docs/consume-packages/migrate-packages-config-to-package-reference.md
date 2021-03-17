@@ -1,8 +1,8 @@
 ---
-title: Migrating from package.config to PackageReference formats
-description: Details on how to migrate a project from the package.config management format to PackageReference as supported by NuGet 4.0+ and VS2017 and .NET Core 2.0
-author: karann-msft
-ms.author: karann
+title: Migrating from packages.config to PackageReference formats
+description: Details on how to migrate a project from the packages.config management format to PackageReference as supported by NuGet 4.0+ and VS2017 and .NET Core 2.0
+author: JonDouglas
+ms.author: jodou
 ms.date: 05/24/2019
 ms.topic: conceptual
 ---
@@ -24,6 +24,8 @@ Visual Studio 2017 Version 15.7 and later supports migrating a project from the 
 * NuGet PackageReference is not available in Visual Studio 2015 and earlier. Migrated projects can be opened only in Visual Studio 2017 and later.
 * Migration is not currently available for C++ and ASP.NET projects.
 * Some packages may not be fully compatible with PackageReference. For more information, see [package compatibility issues](#package-compatibility-issues).
+
+In addition, there are some differences in how PackageReferences work compared to packages.config. For example - [constraining upgrade versions](../consume-packages/reinstalling-and-updating-packages.md#constraining-upgrade-versions) is not supprted by PackageReference but add support for [Floating Versions](../consume-packages/package-references-in-project-files.md#floating-versions).
 
 ### Known Issues
 

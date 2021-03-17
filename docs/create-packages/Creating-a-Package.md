@@ -1,8 +1,8 @@
 ---
 title: Create a NuGet package using nuget.exe CLI
-description: A detailed guide to the process of designing and creating a NuGet package, including key decision points like files and versioning.
-author: karann-msft
-ms.author: karann
+description: A detailed guide on designing and creating a NuGet package, including files and versioning.
+author: JonDouglas
+ms.author: feaguila
 ms.date: 07/09/2019
 ms.topic: conceptual
 ---
@@ -63,8 +63,8 @@ Common optional properties:
 - A short description for the [Package Manager UI in Visual Studio](../consume-packages/install-use-packages-visual-studio.md)
 - A locale ID
 - Project URL
-- License as an expression or file (`licenseUrl` is being deprecated, use the [`license` nuspec metadata element](../reference/nuspec.md#license))
-- An icon URL
+- License as an expression or file (`licenseUrl` is deprecated, use [`license` nuspec metadata element](../reference/nuspec.md#license) instead)
+- An icon file (`iconUrl` is deprecated use [`icon` nuspec metadata element](../reference/nuspec.md#icon) instead)
 - Lists of dependencies and references
 - Tags that assist in gallery searches
 
@@ -72,13 +72,13 @@ The following is a typical (but fictitious) `.nuspec` file, with comments descri
 
 ```xml
 <?xml version="1.0"?>
-<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
-        <!-- The identifier that must be unique within the hosting gallery -->
+        <!-- Identifier that must be unique within the hosting gallery -->
         <id>Contoso.Utility.UsefulStuff</id>
 
-        <!-- The package version number that is used when resolving dependencies -->
-        <version>1.8.3-beta</version>
+        <!-- Package version number that is used when resolving dependencies -->
+        <version>1.8.3</version>
 
         <!-- Authors contain text that appears directly on the gallery -->
         <authors>Dejana Tesic, Rajeev Dey</authors>
@@ -96,8 +96,8 @@ The following is a typical (but fictitious) `.nuspec` file, with comments descri
         <license type="expression">Apache-2.0</license>
         
 
-        <!-- The icon is used in Visual Studio's package manager UI -->
-        <iconUrl>http://github.com/contoso/UsefulStuff/nuget_icon.png</iconUrl>
+        <!-- Icon is used in Visual Studio's package manager UI -->
+        <icon>icon.png</icon>
 
         <!-- 
             If true, this value prompts the user to accept the license when
@@ -129,6 +129,7 @@ The following is a typical (but fictitious) `.nuspec` file, with comments descri
     <!-- A readme.txt to display when the package is installed -->
     <files>
         <file src="readme.txt" target="" />
+        <file src="icon.png" target="" />
     </files>
 </package>
 ```
@@ -271,9 +272,9 @@ The package identifier (`<id>` element) and the version number (`<version>` elem
 
 > The following series of brief blog posts are also helpful to understand versioning:
 >
-> - [Part 1: Taking on DLL Hell](http://blog.davidebbo.com/2011/01/nuget-versioning-part-1-taking-on-dll.html)
-> - [Part 2: The core algorithm](http://blog.davidebbo.com/2011/01/nuget-versioning-part-2-core-algorithm.html)
-> - [Part 3: Unification via Binding Redirects](http://blog.davidebbo.com/2011/01/nuget-versioning-part-3-unification-via.html)
+> - [Part 1: Taking on DLL Hell](https://blog.davidebbo.com/2011/01/nuget-versioning-part-1-taking-on-dll.html)
+> - [Part 2: The core algorithm](https://blog.davidebbo.com/2011/01/nuget-versioning-part-2-core-algorithm.html)
+> - [Part 3: Unification via Binding Redirects](https://blog.davidebbo.com/2011/01/nuget-versioning-part-3-unification-via.html)
 
 ## Add a readme and other files
 
@@ -281,7 +282,7 @@ To directly specify files to include in the package, use the `<files>` node in t
 
 ```xml
 <?xml version="1.0"?>
-<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
     <!-- ... -->
     </metadata>
@@ -311,6 +312,7 @@ In some cases, you might want to add custom build targets or properties in proje
 
 Files in the root `\build` folder are considered suitable for all target frameworks. To provide framework-specific files, first place them within appropriate subfolders, such as the following:
 
+```
     \build
         \netstandard1.4
             \Contoso.Utility.UsefulStuff.props
@@ -318,6 +320,7 @@ Files in the root `\build` folder are considered suitable for all target framewo
         \net462
             \Contoso.Utility.UsefulStuff.props
             \Contoso.Utility.UsefulStuff.targets
+```
 
 Then in the `.nuspec` file, be sure to refer to these files in the `<files>` node:
 
@@ -429,4 +432,4 @@ You might also want to extend the capabilities of your package or otherwise supp
 Finally, there are additional package types to be aware of:
 
 - [Native Packages](../guides/native-packages.md)
-- [Symbol Packages](../create-packages/symbol-packages.md)
+- [Symbol Packages](../create-packages/symbol-packages-snupkg.md)

@@ -49,7 +49,9 @@ DateTime cursor = DateTime.UtcNow.AddHours(-1);
 
 The location of every resource (endpoint) in the NuGet API should be discovered using the [service index](../../api/service-index.md). Because this guide focuses on nuget.org, we'll be using nuget.org's service index.
 
-    GET https://api.nuget.org/v3/index.json
+```
+GET https://api.nuget.org/v3/index.json
+```
 
 The service document is JSON document containing all of the resources on nuget.org. Look for the resource having the `@type` property value of `Catalog/3.0.0`. The associated `@id` property value is the URL to the catalog index itself. 
 
@@ -57,13 +59,17 @@ The service document is JSON document containing all of the resources on nuget.o
 
 Using the `@id` property value found in the previous step, download the catalog index:
 
-    GET https://api.nuget.org/v3/catalog0/index.json
+```
+GET https://api.nuget.org/v3/catalog0/index.json
+```
 
 Deserialize the [catalog index](../../api/catalog-resource.md#catalog-index). Filter out all [catalog page objects](../../api/catalog-resource.md#catalog-page-object-in-the-index) with `commitTimeStamp` less than or equal to your current cursor value.
 
 For each remaining catalog page, download the full document using the `@id` property.
 
-    GET https://api.nuget.org/v3/catalog0/page2926.json
+```
+GET https://api.nuget.org/v3/catalog0/page2926.json
+```
 
 Deserialize the [catalog page](../../api/catalog-resource.md#catalog-page). Filter out all [catalog leaf objects](../../api/catalog-resource.md#catalog-item-object-in-a-page) with `commitTimeStamp` less than or equal to your current cursor value.
 
@@ -75,7 +81,9 @@ At this point, you can perform any custom processing you'd like on the catalog i
 
 If you are interested in the metadata about the package (such at the description, dependencies, .nupkg size, etc), you can fetch the [catalog leaf document](../../api/catalog-resource.md#catalog-leaf) using the `@id` property.
 
-    GET https://api.nuget.org/v3/catalog0/data/2015.02.01.11.18.40/windowsazure.storage.1.0.0.json
+```
+GET https://api.nuget.org/v3/catalog0/data/2015.02.01.11.18.40/windowsazure.storage.1.0.0.json
+```
 
 This document has all of the metadata included in the [package metadata resource](../../api/registration-base-url-resource.md), and more!
 
@@ -105,7 +113,7 @@ git clone https://github.com/NuGet/Samples.git
 
 ### Catalog SDK
 
-The easiest way to consume the catalog is to use the pre-release .NET catalog SDK package: [NuGet.Protocol.Catalog](https://dotnet.myget.org/feed/nuget-build/package/nuget/NuGet.Protocol.Catalog). This package is available on the `nuget-build` MyGet feed, for which you use the NuGet package source URL `https://dotnet.myget.org/F/nuget-build/api/v3/index.json`.
+The easiest way to consume the catalog is to use the pre-release .NET catalog SDK package `NuGet.Protocol.Catalog`, which is available on Azure Artifacts using the following NuGet package source URL: `https://pkgs.dev.azure.com/dnceng/public/_packaging/nuget-build/nuget/v3/index.json`.
 
 You can install this package to a project compatible with `netstandard1.3` or greater (such as .NET Framework 4.6).
 

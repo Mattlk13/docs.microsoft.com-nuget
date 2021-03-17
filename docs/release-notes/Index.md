@@ -1,8 +1,8 @@
 ---
 title: Release Notes
 description: Index of NuGet release notes and known issues for all versions.
-author: karann-msft
-ms.author: karann
+author: anangaur
+ms.author: anangaur
 ms.date: 08/14/2017
 ms.topic: conceptual
 ---
@@ -11,11 +11,25 @@ ms.topic: conceptual
 
 [Known Issues](../release-notes/known-issues.md)
 
-[NuGet 5.2 RTM](../release-notes/NuGet-5.2-RTM.md)
+[NuGet 5.9](../release-notes/NuGet-5.9.md)
 
-[NuGet 5.1 RTM](../release-notes/NuGet-5.1-RTM.md)
+[NuGet 5.8](../release-notes/NuGet-5.8.md)
 
-[NuGet 5.0 RTM](../release-notes/NuGet-5.0-RTM.md)
+[NuGet 5.7](../release-notes/NuGet-5.7.md)
+
+[NuGet 5.6](../release-notes/NuGet-5.6.md)
+
+[NuGet 5.5](../release-notes/NuGet-5.5.md)
+
+[NuGet 5.4](../release-notes/NuGet-5.4.md)
+
+[NuGet 5.3](../release-notes/NuGet-5.3.md)
+
+[NuGet 5.2](../release-notes/NuGet-5.2-RTM.md)
+
+[NuGet 5.1](../release-notes/NuGet-5.1-RTM.md)
+
+[NuGet 5.0](../release-notes/NuGet-5.0-RTM.md)
 
 [NuGet 4.9 RTM](../release-notes/NuGet-4.9-RTM.md)
 

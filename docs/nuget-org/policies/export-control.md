@@ -1,8 +1,8 @@
 ---
 title: Export Control Policy
 description: Policies governing export control laws
-author: karann-msft
-ms.author: karann
+author: JonDouglas
+ms.author: jodou
 ms.date: 06/27/2019
 ms.topic: conceptual
 ---
@@ -23,4 +23,4 @@ As specified in the EAR (Part 742.15(b) & 734.3(b)(3)), the person or entity pro
 
 Release of publicly available source code from export control jurisdiction through the notification process described above *does not apply* to commercial software incorporating or derived from such items.  You are solely responsible for compliance with Export Laws as applied to any commercial software incorporating or derived from source or object code hosted via NuGet.org.
 
-For further information on export and geographic export restrictions, please visit https://www.microsoft.com/en-us/exporting.
+For further information on export and geographic export restrictions, please visit [Microsoft Exporting](https://www.microsoft.com/exporting).

@@ -1,17 +1,17 @@
 ---
 title: NuGet PackageReference format (package references in project files)
 description: Details on NuGet PackageReference in project files as supported by NuGet 4.0+ and VS2017 and .NET Core 2.0
-author: karann-msft
-ms.author: karann
+author: nkolev92
+ms.author: nikolev
 ms.date: 03/16/2018
 ms.topic: conceptual
 ---
 
-# Package references (PackageReference) in project files
+# Package references (`PackageReference`) in project files
 
 Package references, using the `PackageReference` node, manage NuGet dependencies directly within project files (as opposed to a separate `packages.config` file). Using PackageReference, as it's called, doesn't affect other aspects of NuGet; for example, settings in `NuGet.config` files (including package sources) are still applied as explained in [Common NuGet configurations](configuring-nuget-behavior.md).
 
-With PackageReference, you can also use MSBuild conditions to choose package references per target framework, configuration, platform, or other groupings. It also allows for fine-grained control over dependencies and content flow. (See For more details [NuGet pack and restore as MSBuild targets](../reference/msbuild-targets.md).)
+With PackageReference, you can also use MSBuild conditions to choose package references per target framework, or other groupings. It also allows for fine-grained control over dependencies and content flow. (See For more details [NuGet pack and restore as MSBuild targets](../reference/msbuild-targets.md).)
 
 ## Project type support
 
@@ -43,10 +43,12 @@ The convention for specifying the version of a package is the same as when using
 </ItemGroup>
 ```
 
-In the example above, 3.6.0 means any version that is >=3.6.0 with preference for the lowest version, as described on [Package versioning](../concepts/package-versioning.md#version-ranges-and-wildcards).
+In the example above, 3.6.0 means any version that is >=3.6.0 with preference for the lowest version, as described on [Package versioning](../concepts/package-versioning.md#version-ranges).
 
 ## Using PackageReference for a project with no PackageReferences
+
 Advanced: If you have no packages installed in a project (no PackageReferences in project file and no packages.config file), but want the project to be restored as PackageReference style, you can set a Project property RestoreProjectStyle to PackageReference in your project file.
+
 ```xml
 <PropertyGroup>
     <!--- ... -->
@@ -54,7 +56,12 @@ Advanced: If you have no packages installed in a project (no PackageReferences i
     <!--- ... -->
 </PropertyGroup>    
 ```
+
 This may be useful, if you reference projects which are PackageReference styled (existing csproj or SDK-style projects). This will enable packages that those projects refer to, to be "transitively" referenced by your project.
+
+## PackageReference and sources
+
+In PackageReference projects, the transitive dependency versions are resolved at restore time. As such, in PackageReference projects all sources need to be available for all restores. 
 
 ## Floating Versions
 
@@ -158,7 +165,139 @@ Conditions can also be applied at the `ItemGroup` level and will apply to all ch
 </ItemGroup>
 ```
 
+## GeneratePathProperty
+
+This feature is available with NuGet **5.0** or above and with Visual Studio 2019 **16.0** or above.
+
+Sometimes it is desirable to reference files in a package from an MSBuild target.
+In `packages.config` based projects, the packages are installed in a folder relative to the project file. However in PackageReference, the packages are [consumed](../concepts/package-installation-process.md) from the *global-packages* folder, which can vary from machine to machine.
+
+To bridge that gap, NuGet introduced a property that points to the location from which the package will be consumed.
+
+Example:
+
+```xml
+  <ItemGroup>
+      <PackageReference Include="Some.Package" Version="1.0.0" GeneratePathProperty="true" />
+  </ItemGroup>
+
+  <Target Name="TakeAction" AfterTargets="Build">
+    <Exec Command="$(PkgSome_Package)\something.exe" />
+  </Target>
+````
+
+Additionally NuGet will automatically generate properties for packages containing a tools folder.
+
+```xml
+  <ItemGroup>
+      <PackageReference Include="Package.With.Tools" Version="1.0.0" />
+  </ItemGroup>
+
+  <Target Name="TakeAction" AfterTargets="Build">
+    <Exec Command="$(PkgPackage_With_Tools)\tools\tool.exe" />
+  </Target>
+```
+
+MSBuild properties and package identities do not have the same restrictions so the package identity needs to be changed to an MSBuild friendly name, prefixed by the word `Pkg`.
+To verify the exact name of the property generated, look at the generated [nuget.g.props](../reference/msbuild-targets.md#restore-outputs) file.
+
+## PackageReference Aliases
+
+In some rare instances different packages will contain classes in the same namespace. Starting with NuGet 5.7 & Visual Studio 2019 Update 7, equivalent to ProjectReference, PackageReference supports [`Aliases`](/dotnet/api/microsoft.codeanalysis.projectreference.aliases).
+By default no aliases are provided. When an alias is specified, *all* assemblies coming from the annotated package with need to be referenced with an alias.
+
+You can look at sample usage at [NuGet\Samples](https://github.com/NuGet/Samples/tree/master/PackageReferenceAliasesExample)
+
+In the project file, specify the aliases as follows:
+
+```xml
+  <ItemGroup>
+    <PackageReference Include="NuGet.Versioning" Version="5.8.0" Aliases="ExampleAlias" />
+  </ItemGroup>
+```
+
+and in the code use it as follows:
+
+```cs
+extern alias ExampleAlias;
+
+namespace PackageReferenceAliasesExample
+{
+...
+        {
+            var version = ExampleAlias.NuGet.Versioning.NuGetVersion.Parse("5.0.0");
+            Console.WriteLine($"Version : {version}");
+        }
+...
+}
+
+```
+
+## NuGet warnings and errors
+
+*This feature is available with NuGet **4.3** or above and with Visual Studio 2017 **15.3** or above.*
+
+For many pack and restore scenarios, all NuGet warnings and errors are coded, and start with `NU****`. All NuGet warnings and errors are listed in the [reference](../reference/errors-and-warnings.md) documentation.
+
+NuGet observes the following warning properties:
+
+- `TreatWarningsAsErrors`, treat all warnings as errors
+- `WarningsAsErrors`, treat specific warnings as errors
+- `NoWarn`, hide specific warnings, either project-wide or package-wide.
+
+Examples:
+
+```xml
+<PropertyGroup>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+</PropertyGroup>
+...
+<PropertyGroup>
+    <WarningsAsErrors>$(WarningsAsErrors);NU1603;NU1605</WarningsAsErrors>
+</PropertyGroup>
+...
+<PropertyGroup>
+    <NoWarn>$(NoWarn);NU5124</NoWarn>
+</PropertyGroup>
+...
+<ItemGroup>
+    <PackageReference Include="Contoso.Package" Version="1.0.0" NoWarn="NU1605" />
+</ItemGroup>
+```
+
+### Suppressing NuGet warnings
+
+While it is recommended that you resolve all NuGet warnings during your pack and restore operations, in certain situations suppressing them is warranted.
+To suppress a warning project wide, consider doing:
+
+```xml
+<PropertyGroup>
+    <PackageVersion>5.0.0</PackageVersion>
+    <NoWarn>$(NoWarn);NU5104</NoWarn>
+</PropertyGroup>
+<ItemGroup>
+    <PackageReference Include="Contoso.Package" Version="1.0.0-beta.1"/>
+</ItemGroup>
+```
+
+Sometimes warnings apply only to a certain package in the graph. We can choose to suppress that warning more selectively by adding a `NoWarn` on the PackageReference item. 
+
+```xml
+<PropertyGroup>
+    <PackageVersion>5.0.0</PackageVersion>
+</PropertyGroup>
+<ItemGroup>
+    <PackageReference Include="Contoso.Package" Version="1.0.0-beta.1" NoWarn="NU1603" />
+</ItemGroup>
+```
+
+#### Suppressing NuGet package warnings in Visual Studio
+
+When in Visual Studio, you can also [suppress warnings](/visualstudio/ide/how-to-suppress-compiler-warnings#suppress-warnings-for-nuget-packages
+) through the IDE.
+
 ## Locking dependencies
+
 *This feature is available with NuGet **4.9** or above and with Visual Studio 2017 **15.9** or above.*
 
 Input to NuGet restore is a set of Package References from the project file (top-level or direct dependencies) and the output is a full closure of all the package dependencies including transitive dependencies. NuGet tries to always produce the same full closure of package dependencies if the input PackageReference list has not changed. However, there are some scenarios where it is unable to do so. For example:
@@ -174,6 +313,7 @@ Input to NuGet restore is a set of Package References from the project file (top
 * A given package version is removed from the repository. Though nuget.org does not allow package deletions, not all package repositories have this constraints. This results in NuGet finding the best match when it cannot resolve to the deleted version.
 
 ### Enabling lock file
+
 In order to persist the full closure of package dependencies you can opt-in to the lock file feature by setting the MSBuild property `RestorePackagesWithLockFile` for your project:
 
 ```xml
@@ -197,16 +337,19 @@ If NuGet detects a change in the defined dependencies as mentioned in the projec
 For CI/CD and other scenarios, where you would not want to change the package dependencies on the fly, you can do so by setting the `lockedmode` to `true`:
 
 For dotnet.exe, run:
+
 ```
 > dotnet.exe restore --locked-mode
 ```
 
 For msbuild.exe, run:
+
 ```
 > msbuild.exe -t:restore -p:RestoreLockedMode=true
 ```
 
 You may also set this conditional MSBuild property in your project file:
+
 ```xml
 <PropertyGroup>
     <!--- ... -->
@@ -223,20 +366,54 @@ If you are building an application, an executable and the project in question is
 However, if your project is a library project that you do not ship or a common code project on which other projects depend upon, you **should not** check in the lock file as part of your source code. There is no harm in keeping the lock file but the locked package dependencies for the common code project may not be used, as listed in the lock file, during the restore/build of a project that depends on this common-code project.
 
 Eg.
+
 ```
 ProjectA
   |------> PackageX 2.0.0
   |------> ProjectB
              |------>PackageX 1.0.0
 ```
+
 If `ProjectA` has a dependency on a `PackageX` version `2.0.0` and also references `ProjectB` that depends on `PackageX` version `1.0.0`, then the lock file for `ProjectB` will list a dependency on `PackageX` version `1.0.0`. However, when `ProjectA` is built, its lock file will contain a dependency on `PackageX` version **`2.0.0`** and **not** `1.0.0` as listed in the lock file for `ProjectB`. Thus, the lock file of a common code project has little say over the packages resolved for projects that depend on it.
 
 ### Lock file extensibility
+
 You can control various behaviors of restore with lock file as described below:
 
-| Option | MSBuild equivalent option | 
-|:---  |:--- |
-| `--use-lock-file` | Bootstraps use of lock file for a project. You can alternatively set `RestorePackagesWithLockFile` property in the project file | 
-| `--locked-mode` | Enables locked mode for restore. This is useful in CI/CD scenarios where you would like to get the repeatable builds. This can be also by setting the `RestoreLockedMode` MSBuild property to `true` |  
-| `--force-evaluate` | This option is useful with packages with floating version defined in the project. By default, NuGet restore will not update the package version automatically upon each restore unless you run restore with `--force-evaluate` option. |
-| `--lock-file-path` | Defines a custom lock file location for a project. This can be also achieved by setting the MSBuild property `NuGetLockFilePath`. By default, NuGet supports `packages.lock.json` at the root directory. If you have multiple projects in the same directory, NuGet supports project specific lock file `packages.<project_name>.lock.json` |
+| NuGet.exe option | dotnet option | MSBuild equivalent option | Description |
+|:--- |:--- |:--- |:--- |
+| `-UseLockFile` |`--use-lock-file` | RestorePackagesWithLockFile | Opts into the usage of a lock file. |
+| `-LockedMode` | `--locked-mode` | RestoreLockedMode | Enables locked mode for restore. This is useful in CI/CD scenarios where you want repeatable builds.|   
+| `-ForceEvaluate` | `--force-evaluate` | RestoreForceEvaluate | This option is useful with packages with floating version defined in the project. By default, NuGet restore will not update the package version automatically upon each restore unless you run restore with this option. |
+| `-LockFilePath` | `--lock-file-path` | NuGetLockFilePath | Defines a custom lock file location for a project. By default, NuGet supports `packages.lock.json` at the root directory. If you have multiple projects in the same directory, NuGet supports project specific lock file `packages.<project_name>.lock.json` |
+
+## AssetTargetFallback
+
+The `AssetTargetFallback` property lets you specify additional compatible framework versions for projects that your project references and NuGet packages that your project consumes.
+
+If you specify a package dependency using `PackageReference` but that package doesn't contain assets that are compatible with your projects's target framework, the `AssetTargetFallback` property comes into play. The compatibility of the referenced package is rechecked using each target framework that's specified in `AssetTargetFallback`.
+When a `project` or a `package` is referenced through `AssetTargetFallback`, the [NU1701](../reference/errors-and-warnings/NU1701.md) warning will be raised.
+
+Refer to the table below for examples of how `AssetTargetFallback` affects compatibility.
+
+| Project framework | AssetTargetFallback | Package frameworks | Result |
+|-------------------|---------------------|--------------------|--------|
+| .NET Framework 4.7.2 | | .NET Standard 2.0 | .NET Standard 2.0 |
+| .NET Core App 3.1 | | .NET Standard 2.0, .NET Framework 4.7.2 | .NET Standard 2.0 |
+| .NET Core App 3.1 | | .NET Framework 4.7.2 | Incompatible, fail with [`NU1202`](../reference/errors-and-warnings/NU1202.md) |
+| .NET Core App 3.1 | net472;net471 | .NET Framework 4.7.2 | .NET Framework 4.7.2 with [`NU1701`](../reference/errors-and-warnings/NU1701.md) |
+
+Multiple frameworks can be specified using `;` as a delimiter. To add a fallback framework you can do the following:
+
+```xml
+<AssetTargetFallback Condition=" '$(TargetFramework)'=='netcoreapp3.1' ">
+    $(AssetTargetFallback);net472;net471
+</AssetTargetFallback>
+```
+
+You can leave off `$(AssetTargetFallback)` if you wish to overwrite, instead of add to the existing `AssetTargetFallback` values.
+
+> [!NOTE]
+> If you are using a [.NET SDK based project](/dotnet/core/sdk), appropriate `$(AssetTargetFallback)` values are configured and you do not need to set them manually.
+>
+> `$(PackageTargetFallback)` was an earlier feature that attempted to address this challenge, but it is fundamentally broken and *should* not be used. To migrate from `$(PackageTargetFallback)` to `$(AssetTargetFallback)`, simply change the property name.

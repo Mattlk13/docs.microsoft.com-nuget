@@ -1,8 +1,8 @@
 ---
 title: Create and publish a .NET Framework NuGet package using Visual Studio on Windows
 description: A walkthrough tutorial on creating and publishing a .NET Framework NuGet package using Visual Studio on Windows.
-author: karann-msft
-ms.author: karann
+author: JonDouglas
+ms.author: jodou
 ms.date: 05/13/2018
 ms.topic: quickstart
 ---
@@ -89,18 +89,17 @@ You run `nuget spec` only once to generate the initial manifest. When updating t
     <?xml version="1.0"?>
     <package >
       <metadata>
-        <id>$id$</id>
-        <version>$version$</version>
-        <title>$title$</title>
-        <authors>$author$</authors>
-        <owners>$author$</owners>
-        <licenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</licenseUrl>
+        <id>Package</id>
+        <version>1.0.0</version>
+        <authors>YourUsername</authors>
+        <owners>YourUsername</owners>
+        <license type="expression">MIT</license>
         <projectUrl>http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE</projectUrl>
         <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <description>$description$</description>
+        <description>Package description</description>
         <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
-        <copyright>Copyright 2018</copyright>
+        <copyright>Copyright 2019</copyright>
         <tags>Tag1 Tag2</tags>
       </metadata>
     </package>

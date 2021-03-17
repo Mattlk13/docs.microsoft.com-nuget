@@ -1,8 +1,8 @@
 ---
 title: Create .NET Standard and .NET Framework NuGet Packages with Visual Studio 2015
 description: An end-to-end walkthrough of creating .NET Standard and .NET Framework NuGet packages using NuGet 3.x and Visual Studio 2015.
-author: karann-msft
-ms.author: karann
+author: JonDouglas
+ms.author: jodou
 ms.date: 02/02/2018
 ms.topic: tutorial
 ---
@@ -164,7 +164,7 @@ Note that `pack` requires Mono 4.4.2 on Mac OS X and does not work on Linux syst
 - [Supporting multiple .NET framework versions](../create-packages/supporting-multiple-target-frameworks.md)
 - [Include MSBuild props and targets in a package](../create-packages/creating-a-package.md#include-msbuild-props-and-targets-in-a-package)
 - [Creating localized packages](../create-packages/creating-localized-packages.md)
-- [Symbol packages](../create-packages/symbol-packages.md)
+- [Symbol packages](../create-packages/symbol-packages-snupkg.md)
 - [Package versioning](../concepts/package-versioning.md)
 - [.NET Standard Library documentation](/dotnet/articles/standard/library)
 - [Porting to .NET Core from .NET Framework](/dotnet/articles/core/porting/index)

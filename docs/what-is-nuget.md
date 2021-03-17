@@ -1,8 +1,8 @@
 ---
 title: What is NuGet and what does it do?
 description: A comprehensive introduction to what NuGet is and does
-author: karann-msft
-ms.author: karann
+author: JonDouglas
+ms.author: jodou
 ms.date: 05/24/2019
 ms.topic: overview
 ---
@@ -100,9 +100,15 @@ To make these processes work efficiently, NuGet does some behind-the-scenes opti
 
 Within an individual project, NuGet manages the overall dependency graph, which again includes resolving multiple references to different versions of the same package. It's quite common that a project takes a dependency on one or more packages that themselves have the same dependencies. Some of the most useful utility packages on nuget.org are employed by many other packages. In the entire dependency graph, then, you could easily have ten different references to different versions of the same package. To avoid bringing multiple versions of that package into the application itself, NuGet sorts out which single version can be used by all consumers. (For more information, see [Dependency Resolution](concepts/dependency-resolution.md).)
 
-Beyond that, NuGet maintains all the specifications related to how packages are structured (including [localization](create-packages/creating-localized-packages.md) and [debug symbols](create-packages/symbol-packages.md)) and how they are [referenced](consume-packages/package-references-in-project-files.md) (including [version ranges](concepts/package-versioning.md#version-ranges-and-wildcards) and [pre-release versions](create-packages/prerelease-packages.md).) NuGet also provides various APIs to work with its services programmatically, and provides support for developers who write Visual Studio extensions and project templates.
+Beyond that, NuGet maintains all the specifications related to how packages are structured (including [localization](create-packages/creating-localized-packages.md) and [debug symbols](create-packages/symbol-packages-snupkg.md)) and how they are [referenced](consume-packages/package-references-in-project-files.md) (including [version ranges](concepts/package-versioning.md#version-ranges) and [pre-release versions](create-packages/prerelease-packages.md).) NuGet also provides various APIs to work with its services programmatically, and provides support for developers who write Visual Studio extensions and project templates.
 
 Take a moment to browse the table of contents for this documentation, and you see all of these capabilities represented there, along with release notes dating back to NuGet's beginnings.
+
+## Related video
+
+> [!Video https://channel9.msdn.com/Series/NuGet-101/What-is-NuGet-1-of-5/player]
+
+Find more NuGet videos on [Channel 9](https://channel9.msdn.com/Series/NuGet-101) and [YouTube](https://www.youtube.com/playlist?list=PLdo4fOcmZ0oVLvfkFk8O9h6v2Dcdh2bh_).
 
 ## Comments, contributions, and issues
 

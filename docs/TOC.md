@@ -1,4 +1,3 @@
-# [Docs at a glance](index.md)
 # [What is NuGet?](what-is-nuget.md)
 # Get started
 ## [Install NuGet client tools](install-nuget-client-tools.md)
@@ -24,6 +23,7 @@
 ### [Reinstall and update packages](consume-packages/reinstalling-and-updating-packages.md)
 ### [Manage global packages and cache folders](consume-packages/managing-the-global-packages-and-cache-folders.md)
 ### [Manage package trust boundaries](consume-packages/installing-signed-packages.md)
+### [Work with authenticated Feeds](consume-packages/consuming-packages-authenticated-feeds.md)
 ### [Work with source control systems](consume-packages/packages-and-source-control.md)
 ### [Common NuGet configurations](consume-packages/configuring-nuget-behavior.md)
 ## Reference packages in your project
@@ -35,9 +35,10 @@
 ## [Create a package (dotnet CLI)](create-packages/creating-a-package-dotnet-cli.md)
 ## [Create a package (nuget.exe CLI)](create-packages/creating-a-package.md)
 ## [Create a package (MSBuild)](create-packages/creating-a-package-msbuild.md)
-## [Support multiple target frameworks in your project file](create-packages/multiple-target-frameworks-project-file.md)
+## [Package authoring best practices](create-packages/Package-authoring-best-practices.md)
 ## [Build a prerelease package](create-packages/prerelease-packages.md)
 ## [Create a symbol package](create-packages/symbol-packages-snupkg.md)
+## [Support multiple target frameworks in your project file](create-packages/multiple-target-frameworks-project-file.md)
 ## Advanced tasks
 ### [Support multiple target frameworks](create-packages/supporting-multiple-target-frameworks.md)
 ### [Modify source code and config files](create-packages/source-and-config-file-transformations.md)
@@ -45,11 +46,12 @@
 ### [Set package type](create-packages/set-package-type.md)
 ### [Create a localized package](create-packages/creating-localized-packages.md)
 ## Guides for specific content
-### [Create a UWP package](guides/create-uwp-packages.md)
+### [Create a UWP package (C++)](guides/create-uwp-packages.md)
+### [Create a UWP package (C#)](guides/create-uwp-packages-CS.md)
 ### [Create a native package](guides/native-packages.md)
 ### [Create UI controls as a NuGet package](guides/create-UI-controls.md)
 ### [Create an analyzer as a NuGet package](guides/analyzers-conventions.md)
-### [Create a package for Xamarin with Visual Studio 2015](guides/create-packages-for-xamarin.md)
+### [Create a package for Xamarin with Visual Studio 2017 or 2019](guides/create-packages-for-xamarin.md)
 ### [Create a package with COM interop assemblies](create-packages/author-packages-with-COM-interop-assemblies.md)
 ## Sign packages
 ### [Sign a package](create-packages/sign-a-package.md)
@@ -67,6 +69,7 @@
 ## [Package installation process](concepts/package-installation-process.md)
 ## [Package versioning](concepts/package-versioning.md)
 ## [Dependency resolution](concepts/dependency-resolution.md)
+## [Best practices for a secure software supply chain](concepts/Security-Best-Practices.md)
 # Reference
 ## [.nuspec](reference/nuspec.md)
 ## [nuget.config file](reference/nuget-config-file.md)
@@ -86,6 +89,7 @@
 ### [pack](reference/cli-reference/cli-ref-pack.md)
 ### [push](reference/cli-reference/cli-ref-push.md)
 ### [restore](reference/cli-reference/cli-ref-restore.md)
+### [search](reference/cli-reference/cli-ref-search.md)
 ### [setapikey](reference/cli-reference/cli-ref-setapikey.md)
 ### [sign](reference/cli-reference/cli-ref-sign.md)
 ### [sources](reference/cli-reference/cli-ref-sources.md)
@@ -123,7 +127,7 @@
 ### [Rate limits](api/rate-limits.md)
 ### [nuget.org protocols](api/nuget-protocols.md)
 ### [tools.json](api/tools-json.md)
-## [NuGet client SDK](reference/nuget-client-sdk.md)
+## [NuGet Client SDK](reference/nuget-client-sdk.md)
 ## [Errors and Warnings](reference/Errors-and-Warnings.md)
 ### [NU1000](reference/errors-and-warnings/NU1000.md)
 ### [NU1001](reference/errors-and-warnings/NU1001.md)
@@ -259,6 +263,11 @@
 ### [NU5123](reference/errors-and-warnings/NU5123.md)
 ### [NU5124](reference/errors-and-warnings/NU5124.md)
 ### [NU5125](reference/errors-and-warnings/NU5125.md)
+### [NU5127](reference/errors-and-warnings/NU5127.md)
+### [NU5128](reference/errors-and-warnings/NU5128.md)
+### [NU5129](reference/errors-and-warnings/NU5129.md)
+### [NU5130](reference/errors-and-warnings/NU5130.md)
+### [NU5131](reference/errors-and-warnings/NU5131.md)
 ### [NU5500](reference/errors-and-warnings/NU5500.md)
 ## Archived content
 ### [project.json management format](archive/project-json.md)
@@ -282,9 +291,16 @@
 ## Release notes
 ### [Known Issues](release-notes/known-issues.md)
 ### NuGet 5.x
-#### [NuGet 5.2 RTM](release-notes/NuGet-5.2-RTM.md)
-#### [NuGet 5.1 RTM](release-notes/NuGet-5.1-RTM.md)
-#### [NuGet 5.0 RTM](release-notes/NuGet-5.0-RTM.md)
+#### [NuGet 5.9](release-notes/NuGet-5.9.md)
+#### [NuGet 5.8](release-notes/NuGet-5.8.md)
+#### [NuGet 5.7](release-notes/NuGet-5.7.md)
+#### [NuGet 5.6](release-notes/NuGet-5.6.md)
+#### [NuGet 5.5](release-notes/NuGet-5.5.md)
+#### [NuGet 5.4](release-notes/NuGet-5.4.md)
+#### [NuGet 5.3](release-notes/NuGet-5.3.md)
+#### [NuGet 5.2](release-notes/NuGet-5.2-RTM.md)
+#### [NuGet 5.1](release-notes/NuGet-5.1-RTM.md)
+#### [NuGet 5.0](release-notes/NuGet-5.0-RTM.md)
 ### NuGet 4.x
 #### [NuGet 4.9 RTM](release-notes/NuGet-4.9-RTM.md)
 #### [NuGet 4.8 RTM](release-notes/NuGet-4.8-RTM.md)

@@ -1,8 +1,8 @@
 ---
 title: NuGet 2.5 Release Notes
 description: Release notes for NuGet 2.5 including known issues, bug fixes, added features, and DCRs.
-author: karann-msft
-ms.author: karann
+author: JonDouglas
+ms.author: jodou
 ms.date: 11/11/2016
 ms.topic: conceptual
 ---
@@ -170,7 +170,7 @@ Starting with NuGet 2.5, if nuget.exe identifies a UNC/folder source, it will pe
 
 The following command will now work:
 
-```
+```cli
 nuget push -source \\mycompany\repo\ mypackage.1.0.0.nupkg
 ```
 
@@ -180,7 +180,7 @@ nuget.exe commands that access configuration (all except 'spec' and 'pack') now 
 
 Example:
 
-```
+```cli
 nuget sources add -name test -source http://test -ConfigFile C:\test\.nuget\Nuget.Config
 ```
 

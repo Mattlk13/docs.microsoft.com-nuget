@@ -1,8 +1,8 @@
 ---
 title: NuGet 1.0 and 1.1 Release Notes
 description: Release notes for NuGet 1.1 including known issues, bug fixes, added features, and DCRs.
-author: karann-msft
-ms.author: karann
+author: JonDouglas
+ms.author: jodou
 ms.date: 11/11/2016
 ms.topic: conceptual
 ---
@@ -38,7 +38,7 @@ To use this [latest release](http://nuget.codeplex.com/releases/view/52018):
 
 * First uninstall your older build. You need to run VS as administrator to do this.
 * Remove all the existing feeds that you have.
-* Add a new feed pointing to [http://go.microsoft.com/fwlink/?LinkId=206669](http://go.microsoft.com/fwlink/?LinkId=206669).
+* Add a new feed pointing to <https://go.microsoft.com/fwlink/?LinkId=206669>.
 
 ## NuGet 1.1
 

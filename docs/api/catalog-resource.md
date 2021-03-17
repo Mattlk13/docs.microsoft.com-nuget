@@ -59,7 +59,9 @@ Catalog items are always added to the catalog in a monotonically increasing, chr
 
 The following request fetches the catalog index.
 
-    GET {@id}
+```
+GET {@id}
+```
 
 The catalog index is a JSON document that contains an object with the following properties:
 
@@ -96,7 +98,9 @@ URL.
 
 ### Sample request
 
-    GET https://api.nuget.org/v3/catalog0/index.json
+```
+GET https://api.nuget.org/v3/catalog0/index.json
+```
 
 ### Sample response
 
@@ -158,7 +162,9 @@ For more details about what each type means, see the [corresponding items type](
 
 ### Sample request
 
-    GET https://api.nuget.org/v3/catalog0/page2926.json
+```
+GET https://api.nuget.org/v3/catalog0/page2926.json
+```
 
 ### Sample response
 
@@ -227,6 +233,7 @@ minClientVersion        | string                     | no       |
 packageHash             | string                     | yes      | The hash of the package, encoding using [standard base 64](https://tools.ietf.org/html/rfc4648#section-4)
 packageHashAlgorithm    | string                     | yes      |
 packageSize             | integer                    | yes      | The size of the package .nupkg in bytes
+packageTypes            | array of objects           | no       | The package types specified by the author.
 projectUrl              | string                     | no       |
 releaseNotes            | string                     | no       |
 requireLicenseAgreement | boolean                    | no       | Assume `false` if excluded
@@ -234,6 +241,7 @@ summary                 | string                     | no       |
 tags                    | array of strings           | no       |
 title                   | string                     | no       |
 verbatimVersion         | string                     | no       | The version string as it's originally found in the .nuspec
+vulnerabilities         | array of objects           | no       | The security vulnerabilities of the package
 
 The package `version` property is the full version string after normalization. This means that SemVer 2.0.0 build data can
 be included here.
@@ -244,14 +252,34 @@ time before the catalog item's commit timestamp.
 The `packageHashAlgorithm` is a string defined by the server implementation representing the hashing algorithm used to
 produce the `packageHash`. nuget.org always used the `packageHashAlgorithm` value of `SHA512`.
 
+The `packageTypes` property will only be present if a package type was specified by the author. If it is present, it will always have at least one (1) entry. Each item in the `packageTypes` array is a JSON object with the following properties:
+
+Name      | Type    | Required | Notes
+--------- | ------- | -------- | -----
+name      | string  | yes      | The name of the package type.
+version    | string  | no       | The version of the package type. Only present if the author explicitly specified a version in the nuspec.
+
 The `published` timestamp is the time when the package was last listed.
 
 > [!Note]
 > On nuget.org, the `published` value is set to the year 1900 when the package is unlisted.
 
+#### Vulnerabilities
+
+An array of `vulnerability` objects. Each vulnerability has the following properties:
+
+Name         | Type   | Required | Notes
+------------ | ------ | -------- | -----
+advisoryUrl  | string | yes      | Location of security advisory for the package
+severity     | string | yes      | Severity of advisory: "0" = Low, "1" = Moderate, "2" = High, "3" = Critical
+
+If the `severity` property contains values other than those listed here, the severity of the advisory is to be treated as Low.
+
 #### Sample request
 
+```
 GET https://api.nuget.org/v3/catalog0/data/2015.02.01.11.18.40/windowsazure.storage.1.0.0.json
+```
 
 #### Sample response
 
@@ -279,7 +307,9 @@ item's commit timestamp.
 
 #### Sample request
 
+```
 GET https://api.nuget.org/v3/catalog0/data/2017.11.02.00.40.00/netstandard1.4_lib.1.0.0-test.json
+```
 
 #### Sample response
 

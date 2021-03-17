@@ -1,8 +1,8 @@
 ---
 title: How to Publish a NuGet Package
 description: Detailed instructions for how to publish a NuGet package to nuget.org or private feeds, and how to manage package ownership on nuget.org.
-author: karann-msft
-ms.author: karann
+author: JonDouglas
+ms.author: jodou
 ms.date: 05/18/2018
 ms.topic: conceptual
 ms.reviewer: anangaur
@@ -19,7 +19,7 @@ This article covers publishing to nuget.org; for publishing to Azure Artifacts, 
 
 ## Publish to nuget.org
 
-For nuget.org, you must sign in with a Microsoft account, with which you'll be asked to register the account with nuget.org. You can also sign in with a nuget.org account created using older versions of the portal.
+For nuget.org, you must sign in with a Microsoft account, with which you'll be asked to register the account with nuget.org.
 
 ![NuGet sign in location](media/publish_NuGetSignIn.png)
 
@@ -41,7 +41,8 @@ Next, you can either upload the package through the nuget.org web portal, push t
 
 ### Command line
 
-To push packages to nuget.org you must use [nuget.exe v4.1.0 or above](https://www.nuget.org/downloads), which implements the required [NuGet protocols](../api/nuget-protocols.md). You also need an API key, which is created on nuget.org.
+To push packages to nuget.org, you first need an API key, which is created on nuget.org. You must use either dotnet.exe (.NET Core), or nuget.exe v4.1.0 or above, which implement the required NuGet protocols.
+For more information, see [.NET Core](/dotnet/core/install/), [nuget.exe](https://www.nuget.org/downloads), and [NuGet protocols](../api/nuget-protocols.md).
 
 #### Create API keys
 
@@ -59,7 +60,11 @@ To push packages to nuget.org you must use [nuget.exe v4.1.0 or above](https://w
     nuget setApiKey <your_API_key>
     ```
 
-    This command stores your API key in your NuGet configuration so that you need repeat this step again on the same computer.
+    This command stores your API key in your NuGet configuration so that you don't need to repeat this step again on the same computer.
+
+    > [!NOTE]
+    > API key is not used for authenticating with the private feed. Refer to [`nuget sources` command](../reference/cli-reference/cli-ref-sources.md) to manage credentials for authenticating with the source.
+    > API keys can be obtained from the individual NuGet servers. To create and manange APIKeys for nuget.org refer to [Create API keys](#create-api-keys).
 
 1. Push your package to NuGet Gallery using the following command:
 
@@ -110,7 +115,7 @@ From here you have several options:
 1. Add an owner under **Add Owner** by entering their user name, a message, and selecting **Add**. This action sends an email to that new co-owner with a confirmation link. Once confirmed, that person has full permissions to add and remove owners. (Until confirmed, the **Current Owners** section indicates pending approval for that person.)
 1. To transfer ownership (as when ownership changes or a package was published under the wrong account), add the new owner, and once they've confirmed ownership they can remove you from the list.
 
-To assign ownership to a company or group, create a nuget.org account using an email alias that is forwarded to the appropriate team members. For example, various Microsoft ASP.NET packages are co-owned by the [microsoft](http://nuget.org/profiles/microsoft) and [aspnet](http://nuget.org/profiles/aspnet) accounts, which simply such aliases.
+To assign ownership to a company or group, create a nuget.org account using an email alias that is forwarded to the appropriate team members. For example, various Microsoft ASP.NET packages are co-owned by the [microsoft](https://nuget.org/profiles/microsoft) and [aspnet](https://nuget.org/profiles/aspnet) accounts, which simply such aliases.
 
 ### Recovering package ownership
 

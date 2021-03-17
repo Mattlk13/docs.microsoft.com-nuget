@@ -85,9 +85,12 @@ other hand, if the server implementation immediately stores registration leaves 
 must perform more HTTP requests to get the information it needs.
 
 The heuristic that nuget.org uses is as follows: if there are 128 or more versions of a package, break the leaves
-into pages of size 64. If there are less than 128 versions, inline all leaves into the registration index.
+into pages of size 64. If there are less than 128 versions, inline all leaves into the registration index. Note that
+this means packages with 65 to 127 versions will have two pages in the index but both pages will be inlined.
 
-    GET {@id}/{LOWER_ID}/index.json
+```
+GET {@id}/{LOWER_ID}/index.json
+```
 
 ### Request parameters
 
@@ -96,7 +99,7 @@ Name     | In     | Type    | Required | Notes
 LOWER_ID | URL    | string  | yes      | The package ID, lowercased
 
 The `LOWER_ID` value is the desired package ID lowercased using the rules implemented by .NET's
-[`System.String.ToLowerInvariant()`](/dotnet/api/system.string.tolowerinvariant?view=netstandard-2.0#System_String_ToLowerInvariant) method.
+[`System.String.ToLowerInvariant()`](/dotnet/api/system.string.tolowerinvariant?view=netstandard-2.0#System_String_ToLowerInvariant&preserve-view=true) method.
 
 ### Response
 
@@ -126,7 +129,7 @@ The `lower` and `upper` bounds of the page object are useful when the metadata f
 These bounds can be used to fetch the only registration page needed. The version strings adhere to
 [NuGet's version rules](../concepts/package-versioning.md). The version strings are normalized and do not include
 build metadata. As with all versions in the NuGet ecosystem, comparison of version strings is implemented using
-[SemVer 2.0.0's version precedence rules](http://semver.org/spec/v2.0.0.html#spec-item-11).
+[SemVer 2.0.0's version precedence rules](https://semver.org/spec/v2.0.0.html#spec-item-11).
 
 The `parent` property will only appear if the registration page object has the `items` property.
 
@@ -160,7 +163,7 @@ The `catalogEntry` property in the registration leaf object has the following pr
 
 Name                     | Type                       | Required | Notes
 ------------------------ | -------------------------- | -------- | -----
-@id                      | string                     | yes      | The URL to document used to produce this object
+@id                      | string                     | yes      | The URL to the document used to produce this object
 authors                  | string or array of strings | no       | 
 dependencyGroups         | array of objects           | no       | The dependencies of the package, grouped by target framework
 deprecation              | object                     | no       | The deprecation associated with the package
@@ -178,6 +181,7 @@ summary                  | string                     | no       |
 tags                     | string or array of string  | no       | 
 title                    | string                     | no       | 
 version                  | string                     | yes      | The full version string after normalization
+vulnerabilities          | array of objects           | no       | The security vulnerabilities of the package
 
 The package `version` property is the full version string after normalization. This means that SemVer 2.0.0 build data
 can be included here.
@@ -187,7 +191,10 @@ framework. If the package has no dependencies, the `dependencyGroups` property i
 `dependencies` property of all groups is empty or missing.
 
 The value of the `licenseExpression` property complies with
-[NuGet license expression syntax](https://docs.microsoft.com/en-us/nuget/reference/nuspec#license).
+[NuGet license expression syntax](../reference/nuspec.md#license).
+
+> [!Note]
+> On nuget.org, the `published` value is set to year 1900 when the package is unlisted.
 
 #### Package dependency group
 
@@ -211,11 +218,11 @@ Each package dependency has the following properties:
 Name         | Type   | Required | Notes
 ------------ | ------ | -------- | -----
 id           | string | yes      | The ID of the package dependency
-range        | object | no       | The allowed [version range](../concepts/package-versioning.md#version-ranges-and-wildcards) of the dependency
+range        | object | no       | The allowed [version range](../concepts/package-versioning.md#version-ranges) of the dependency
 registration | string | no       | The URL to the registration index for this dependency
 
 If the `range` property is excluded or an empty string, the client should default to the version range `(, )`. That is,
-any version of the dependency is allowed.
+any version of the dependency is allowed. The value of `*` is not allowed for the `range` property.
 
 #### Package deprecation
 
@@ -225,7 +232,7 @@ Name             | Type             | Required | Notes
 ---------------- | ---------------- | -------- | -----
 reasons          | array of strings | yes      | The reasons why the package was deprecated
 message          | string           | no       | The additional details about this deprecation
-alternatePackage | object           | no       | The package dependency that should be used instead
+alternatePackage | object           | no       | The alternate package that should be used instead
 
 The `reasons` property must contain at least one string and should only contains strings from the following table:
 
@@ -237,9 +244,29 @@ Other        | The package is deprecated due to a reason not on this list
 
 If the `reasons` property contains strings that are not from the known set, they should be ignored. The strings are case-insensitive, so `legacy` should be treated the same as `Legacy`. There is no ordering restriction on the array, so the strings can arranged in any arbitrary order. Additionally, if the property contains only strings that are not from the known set, it should be treated as if it only contained the "Other" string.
 
+#### Alternate package
+
+The alternate package object has the following properties:
+
+Name         | Type   | Required | Notes
+------------ | ------ | -------- | -----
+id           | string | yes      | The ID of the alternate package
+range        | object | no       | The allowed [version range](../concepts/package-versioning.md#version-ranges), or `*` if any version is allowed
+
+#### Vulnerabilities
+
+An array of `vulnerability` objects. Each vulnerability has the following properties:
+
+Name         | Type   | Required | Notes
+------------ | ------ | -------- | -----
+advisoryUrl  | string | yes      | Location of security advisory for the package
+severity     | string | yes      | Severity of advisory: "0" = Low, "1" = Moderate, "2" = High, "3" = Critical
+
 ### Sample request
 
-    GET https://api.nuget.org/v3/registration3/nuget.server.core/index.json
+```
+GET https://api.nuget.org/v3/registration3/nuget.server.core/index.json
+```
 
 ### Sample response
 
@@ -251,7 +278,13 @@ fetch metadata about individual package versions.
 ## Registration page
 
 The registration page contains registration leaves. The URL to fetch a registration page is determined by the `@id`
-property in the [registration page object](#registration-page-object) mentioned above.
+property in the [registration page object](#registration-page-object) mentioned above. The URL is not meant to be
+predictable and should always be discovered by means of the index document.
+
+> [!Warning]
+> On nuget.org, the URL for the registration page document coincidentally contains the lower and upper bound of the 
+> page. However this assumption should never be made by a client since server implementations are free to change the
+> shape of the URL as long as the index document has a valid link.
 
 When the `items` array is not provided in the registration index, an HTTP GET request of the `@id` value will return a
 JSON document which has an object as its root. The object has the following properties:
@@ -270,7 +303,9 @@ The shape of the registration leaf objects is the same as in the registration in
 
 ## Sample request
 
-    GET https://api.nuget.org/v3/registration3/ravendb.client/page/1.0.531/1.0.729-unstable.json
+```
+GET https://api.nuget.org/v3/registration3/ravendb.client/page/1.0.531/1.0.729-unstable.json
+```
 
 ## Sample response
 
@@ -284,7 +319,13 @@ version may not be available in this document. Package metadata should be fetche
 the registration index).
 
 The URL to fetch a registration leaf is obtained from the `@id` property of a registration leaf object in either a
-registration index or registration page.
+registration index or registration page. As with the page document. the URL is not meant to be predictable and should
+always be discovered by means of the registration page object.
+
+> [!Warning]
+> On nuget.org, the URL for the registration leaf document coincidentally contains the package version. However this
+> assumption should never be made by a client since server implementations are free to change the shape of the URL as
+> long as the parent document has a valid link. 
 
 The registration leaf is a JSON document with a root object with the following properties:
 
@@ -302,7 +343,9 @@ registration   | string  | no       | The URL to the registration index
 
 ### Sample request
 
-    GET https://api.nuget.org/v3/registration3/nuget.versioning/4.3.0.json
+```
+GET https://api.nuget.org/v3/registration3/nuget.versioning/4.3.0.json
+```
 
 ### Sample response
 

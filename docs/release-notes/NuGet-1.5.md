@@ -1,8 +1,8 @@
 ---
 title: NuGet 1.5 Release Notes
 description: Release notes for NuGet 1.5 including known issues, bug fixes, added features, and DCRs.
-author: karann-msft
-ms.author: karann
+author: JonDouglas
+ms.author: jodou
 ms.date: 11/11/2016
 ms.topic: conceptual
 ---
@@ -24,7 +24,7 @@ when the project template is invoked. This ability to include NuGet packages wit
 project template is now a feature of NuGet that _any_ project template can now take
 advantage of.
 
-For more details about this feature, read this [blog post by the developer of the feature](http://blogs.msdn.com/b/marcinon/archive/2011/07/08/project-templates-and-preinstalled-nuget-packages.aspx).
+For more details about this feature, read this [blog post by the developer of the feature](https://blogs.msdn.com/b/marcinon/archive/2011/07/08/project-templates-and-preinstalled-nuget-packages.aspx).
 
 ### Explicit Assembly References
 
@@ -94,7 +94,9 @@ dependencies along with the package.
 ### `Get-Package` command improvement
 The `Get-Package` command now supports a `-ProjectName` parameter. So the command
 
-    Get-Package –ProjectName A
+```
+Get-Package –ProjectName A
+```
 
 will list all packages installed in project A.
 
